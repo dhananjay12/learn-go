@@ -3,5 +3,15 @@ package main
 import "fmt"
 
 func main() {
-	fmt.Println("Hello, world!")
+
+	i := 1
+
+	fmt.Print(i)
+
+	i++
+
+	defer fmt.Print(i + 1)
+
+	fmt.Print(i)
+
 }
