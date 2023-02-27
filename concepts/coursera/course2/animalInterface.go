@@ -71,9 +71,9 @@ func main() {
 	animals := make(map[string]Animal)
 	scanner := bufio.NewScanner(os.Stdin)
 	fmt.Println("This program allows you to create a newanimal or query an existing one")
-	fmt.Println("To create a new animal type 'newanimal <cow|bird|snake> <name-of-animal>'. For eg 'newanimal cow cow1'")
+	fmt.Println("To create a new animal type 'newanimal <name-of-animal> <cow|bird|snake>'. For eg 'newanimal cow cow1'")
 	fmt.Println("To query type 'query <name-of-animal> <eat|move|speak>'. For eg 'query cow1 eat'")
-	fmt.Println("Press CTRL+C to exit")
+	fmt.Println("Press CTRL+C to exit.")
 
 	for {
 		fmt.Print("> ")
@@ -85,8 +85,8 @@ func main() {
 		fields := strings.Fields(input)
 		switch fields[0] {
 		case "newanimal":
-			animalType := fields[1]
-			name := fields[2]
+			name := fields[1]
+			animalType := fields[2]
 			switch animalType {
 			case "cow":
 				animals[name] = cow{}
@@ -94,6 +94,9 @@ func main() {
 				animals[name] = bird{}
 			case "snake":
 				animals[name] = snake{}
+			default:
+				fmt.Println("Invalid animal type. Please try again")
+				continue
 			}
 			fmt.Println("Created it!")
 		case "query":
@@ -111,6 +114,8 @@ func main() {
 				animal.Move()
 			case "speak":
 				animal.Speak()
+			default:
+				fmt.Println("Invalid action. Please try again")
 			}
 		default:
 			fmt.Println("Invalid command. Please try again")
