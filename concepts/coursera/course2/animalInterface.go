@@ -35,73 +35,86 @@ Your program should call the appropriate method when the user issues a query com
 
 package main
 
-import "fmt"
+import (
+	"bufio"
+	"fmt"
+	"os"
+	"strings"
+)
 
-// Interface for animals
 type Animal interface {
 	Eat()
 	Move()
 	Speak()
 }
 
-// Struct for animals
-type AnimalStruct struct {
-	food       string
-	locomotion string
-	noise      string
-}
+type cow struct{}
 
-// Method for eating with name
-func (a *AnimalStruct) Eat() {
-	fmt.Println(a.food)
-}
+func (c cow) Eat()   { fmt.Println("grass") }
+func (c cow) Move()  { fmt.Println("walk") }
+func (c cow) Speak() { fmt.Println("moo") }
 
-// Method for moving
-func (a *AnimalStruct) Move() {
-	fmt.Println(a.locomotion)
-}
+type bird struct{}
 
-// Method for speaking
-func (a *AnimalStruct) Speak() {
-	fmt.Println(a.noise)
-}
+func (b bird) Eat()   { fmt.Println("worms") }
+func (b bird) Move()  { fmt.Println("fly") }
+func (b bird) Speak() { fmt.Println("peep") }
 
-// Make coe, bird and snake
-var cow = AnimalStruct{"grass", "walk", "moo"}
-var bird = AnimalStruct{"worms", "fly", "peep"}
-var snake = AnimalStruct{"mice", "slither", "hsss"}
+type snake struct{}
 
-// Map for animals
-var animalsMap = map[string]AnimalStruct{
-	"cow":   cow,
-	"bird":  bird,
-	"snake": snake,
-}
+func (s snake) Eat()   { fmt.Println("mice") }
+func (s snake) Move()  { fmt.Println("slither") }
+func (s snake) Speak() { fmt.Println("hiss") }
 
 // Main function
 func main() {
-	var command, animalReq1, animalReq2 string
-	fmt.Println("This program allows you to create a newanimal or query an exsisting one")
+	animals := make(map[string]Animal)
+	scanner := bufio.NewScanner(os.Stdin)
+	fmt.Println("This program allows you to create a newanimal or query an existing one")
 	fmt.Println("To create a new animal type 'newanimal <cow|bird|snake> <name-of-animal>'. For eg 'newanimal cow cow1'")
-	fmt.Println("To query type 'query <name-of-animal> <eat|move|speak>'. For eg 'quet cow1 eat'")
+	fmt.Println("To query type 'query <name-of-animal> <eat|move|speak>'. For eg 'query cow1 eat'")
+	fmt.Println("Press CTRL+C to exit")
 
 	for {
-		fmt.Printf(">")
-		fmt.Scan(&command, &animalReq1, &animalReq2)
-		if command == "newanimal" {
-			animalsMap[animalReq2] = animalsMap[animalReq1]
-			fmt.Println("Created it!")
+		fmt.Print("> ")
+		scanner.Scan()
+		input := scanner.Text()
+		if input == "X" {
+			break
 		}
-		if command == "query" {
-			genralAni := animalsMap[animalReq1]
-			switch animalReq2 {
-			case "eat":
-				genralAni.Eat()
-			case "move":
-				genralAni.Move()
-			case "speak":
-				genralAni.Speak()
+		fields := strings.Fields(input)
+		switch fields[0] {
+		case "newanimal":
+			animalType := fields[1]
+			name := fields[2]
+			switch animalType {
+			case "cow":
+				animals[name] = cow{}
+			case "bird":
+				animals[name] = bird{}
+			case "snake":
+				animals[name] = snake{}
 			}
+			fmt.Println("Created it!")
+		case "query":
+			name := fields[1]
+			action := fields[2]
+			animal, exists := animals[name]
+			if !exists {
+				fmt.Println("Animal not found. Please create the animal first.")
+				continue
+			}
+			switch action {
+			case "eat":
+				animal.Eat()
+			case "move":
+				animal.Move()
+			case "speak":
+				animal.Speak()
+			}
+		default:
+			fmt.Println("Invalid command. Please try again")
 		}
+
 	}
 }
