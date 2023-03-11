@@ -46,14 +46,15 @@ func main() {
 	outputValues = append(outputValues, partition4...)
 	sort.Ints(outputValues)
 
-	fmt.Println("Sorted values:")
-	fmt.Println(outputValues)
+	fmt.Println("Sorted values:", outputValues)
 }
 
-func Sort(unsortedSLices []int) []int {
-	sort.Ints(unsortedSLices)
+func Sort(inputSlices []int) []int {
+	fmt.Print("Sorting:", inputSlices)
+	sort.Ints(inputSlices)
 	wg.Done()
-	return unsortedSLices
+	fmt.Println("->", inputSlices)
+	return inputSlices
 }
 
 func ReadValues() (inputValues []int, err error) {
